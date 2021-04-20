@@ -4,23 +4,22 @@ The source code for `trace_processor_shell` lives in `external/perfetto` in the 
 
 ## Building stripped binaries
 
-Checkout the [AOSP](https://g3doc.corp.google.com/company/teams/android/developing/index.md?cl=head) source tree.
+Check out the detailed build instructions [here](https://perfetto.dev/docs/contributing/build-instructions).
 
 ```bash
-cd <root of AOSP checkout>
-source build/envsetup.sh
-# Pick lunch targets
-# AARCH64
-lunch flame-userdebug
-# ARM32
-tapas
+tools/gn args out/<out_folder>
+
+# Use the following config
+target_os = "android"
+target_cpu = "arm" / "arm64" / "x64" # Depending on the platform
+is_debug = false
+monolithic_binaries = true
 
 # Finally build the binaries
-mmma external/perfetto
+tools/ninja -C out/<out_folder>
 
-# Copy Outputs to prebuilts
-# aarch64, arm32 are the suffixes being used.
-# <xxx> = generic for aosp_arm
-
-cp <aosp_root>/out/target/product/<xxx>/system/bin/trace_processor_shell <androidx-root>/prebuilts/androidx/traceprocessor/trace_processor_shell/trace_processor_shell_<suffix>
+# Strip Binaries
+# You should have downloaded the NDK
+# ndk_versio = 22.1.7171670
+/path/to/sdk/ndk/<ndk_version>/toolchains/llvm/prebuilt/<platform/paths>/bin/strip <binary_name>
 ```
