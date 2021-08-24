@@ -31,7 +31,7 @@ from shutil import copyfile
 
 ANDROID_ARGS = ('target_os="android"', 'monolithic_binaries=true', 'is_debug=false')
 
-ANDROID_BUILD_TARGETS = ('traced', 'traced_probes', 'perfetto', 'trace_processor_shell')
+ANDROID_BUILD_TARGETS = ('trace_processor_shell', 'tracebox')
 
 # List of each arch, with a tuple of:
 # - perfetto-name (arg in perfetto build)
