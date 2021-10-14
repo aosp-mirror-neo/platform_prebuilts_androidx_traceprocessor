@@ -26,7 +26,7 @@ import sys
 from shlex import quote
 from shutil import copyfile
 
-# NOTE - this script is adapted from perfetto/tools/build_all_binaries.py
+# NOTE - this script is adapted from perfetto/tools/build_all_configs.py
 # If this stops working, check there (e.g. for arg renames)
 
 ANDROID_ARGS = ('target_os="android"', 'monolithic_binaries=true', 'is_debug=false')
