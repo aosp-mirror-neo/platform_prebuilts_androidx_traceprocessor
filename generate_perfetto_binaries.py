@@ -41,6 +41,7 @@ ARCH_LIST = (
     ('arm', 'arm', 'arm-%s-androideabi'),
     ('arm64', 'aarch64', 'aarch64-%s-android'),
     ('x64', 'x86_64', 'x86_64-%s-android'),
+    ('x86', 'x86', 'x86_64-%s-android'),
 )
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
