@@ -1,26 +1,26 @@
-# Perfetto Binaries
+# Trace Processor Shell
 
-The source code for several perfetto binaries lives in the `external/perfetto`
-project in the AOSP source tree. These  binaries enable unbundled perfetto
-tracing, and on-device trace processing.
+The source code for `trace_processor_shell` lives in `external/perfetto` in the AOSP source tree.
 
-To set up the perfetto repository for the first time:
+## Building stripped binaries
 
-```bash
-git clone https://android.googlesource.com/platform/external/perfetto/ perfetto_repo
-perfetto_repo/tools/install-build-deps --android
-```
-
-To build stripped binaries from the local repository:
+Checkout the [AOSP](https://g3doc.corp.google.com/company/teams/android/developing/index.md?cl=head) source tree.
 
 ```bash
-./generate_perfetto_binaries.py
+cd <root of AOSP checkout>
+source build/envsetup.sh
+# Pick lunch targets
+# AARCH64
+lunch flame-userdebug
+# ARM32
+tapas
+
+# Finally build the binaries
+mmma external/perfetto
+
+# Copy Outputs to prebuilts
+# aarch64, arm32 are the suffixes being used.
+# <xxx> = generic for aosp_arm
+
+cp <aosp_root>/out/target/product/<xxx>/system/bin/trace_processor_shell <androidx-root>/prebuilts/androidx/traceprocessor/trace_processor_shell/trace_processor_shell_<suffix>
 ```
-
-This script automates some of the build instructions documented
-[here](https://perfetto.dev/docs/contributing/build-instructions).
-
-Some important things handled are:
- - binary stripping (drastically reduces binary size)
- - sets `monolithic_binaries = true` (important for unbundled usage)
- - handles all architectures supported by macrobenchmark
