@@ -84,13 +84,6 @@ def main():
       # copy out of perfetto out dir
       copyfile(os.path.join(out_dir, target), out_file)
 
-      # Note that this does not support other OS types beside macos and linux
-      system = platform.system().lower()
-      if system == "darwin":
-        platform_folder = "darwin-x86_64"
-      else:
-        platform_folder = "linux-x86_64"
-
       # strip it using ndk from perfetto checkout
       strip_path = os.path.join(
           perfetto_dir,
@@ -99,7 +92,7 @@ def main():
           "toolchains",
           "llvm",
           "prebuilt",
-          platform_folder,
+          "linux-x86_64",
           ndk_dir_pattern % ("linux"), # TODO: support macos
           "bin",
           "strip")
