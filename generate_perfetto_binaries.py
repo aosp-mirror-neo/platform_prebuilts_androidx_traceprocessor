@@ -26,12 +26,13 @@ import sys
 from shlex import quote
 from shutil import copyfile
 
-# NOTE - this script is adapted from perfetto/tools/build_all_binaries.py
-# If this stops working, check there (e.g. for arg renames)
+# NOTE - this script is adapted from perfetto_repo/tools/build_all_configs.py
+# If this stops working, try perfetto_repo/tools/install-build-deps, and check
+# the original build script (e.g. for arg renames)
 
 ANDROID_ARGS = ('target_os="android"', 'monolithic_binaries=true', 'is_debug=false')
 
-ANDROID_BUILD_TARGETS = ('traced', 'traced_probes', 'perfetto', 'trace_processor_shell')
+ANDROID_BUILD_TARGETS = ('trace_processor_shell', 'tracebox')
 
 # List of each arch, with a tuple of:
 # - perfetto-name (arg in perfetto build)
@@ -41,6 +42,7 @@ ARCH_LIST = (
     ('arm', 'arm', 'arm-%s-androideabi'),
     ('arm64', 'aarch64', 'aarch64-%s-android'),
     ('x64', 'x86_64', 'x86_64-%s-android'),
+    ('x86', 'x86', 'x86_64-%s-android'),
 )
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
