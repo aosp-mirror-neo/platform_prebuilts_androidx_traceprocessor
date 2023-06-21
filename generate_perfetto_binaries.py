@@ -26,9 +26,8 @@ import sys
 from shlex import quote
 from shutil import copyfile
 
-# NOTE - this script is adapted from perfetto_repo/tools/build_all_configs.py
-# If this stops working, try perfetto_repo/tools/install-build-deps, and check
-# the original build script (e.g. for arg renames)
+# NOTE - this script is adapted from perfetto/tools/build_all_configs.py
+# If this stops working, check there (e.g. for arg renames)
 
 ANDROID_ARGS = ('target_os="android"', 'monolithic_binaries=true', 'is_debug=false')
 
@@ -42,7 +41,6 @@ ARCH_LIST = (
     ('arm', 'arm', 'arm-%s-androideabi'),
     ('arm64', 'aarch64', 'aarch64-%s-android'),
     ('x64', 'x86_64', 'x86_64-%s-android'),
-    ('x86', 'x86', 'x86_64-%s-android'),
 )
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -84,13 +82,6 @@ def main():
       # copy out of perfetto out dir
       copyfile(os.path.join(out_dir, target), out_file)
 
-      # Note that this does not support other OS types beside macos and linux
-      system = platform.system().lower()
-      if system == "darwin":
-        platform_folder = "darwin-x86_64"
-      else:
-        platform_folder = "linux-x86_64"
-
       # strip it using ndk from perfetto checkout
       strip_path = os.path.join(
           perfetto_dir,
@@ -99,7 +90,7 @@ def main():
           "toolchains",
           "llvm",
           "prebuilt",
-          platform_folder,
+          "linux-x86_64",
           ndk_dir_pattern % ("linux"), # TODO: support macos
           "bin",
           "strip")
