@@ -26,23 +26,39 @@ import sys
 from shlex import quote
 from shutil import copyfile
 
-# NOTE - this script is adapted from perfetto_repo/tools/build_all_configs.py
-# If this stops working, try perfetto_repo/tools/install-build-deps, and check
-# the original build script (e.g. for arg renames)
+# NOTE - this script is adapted from (now deleted)
+# perfetto_repo/tools/build_all_configs.py If this stops working, try
+# perfetto_repo/tools/install-build-deps, and check build instructions
+# at See build docs at
+# https://perfetto.dev/docs/contributing/build-instructions
+ANDROID_ARGS = (
+    'target_os="android"',
+    'monolithic_binaries=true',
+    'is_debug=false'
+)
 
-ANDROID_ARGS = ('target_os="android"', 'monolithic_binaries=true', 'is_debug=false')
-
-ANDROID_BUILD_TARGETS = ('trace_processor_shell', 'tracebox')
+ANDROID_BUILD_TARGETS = (
+    'trace_processor_shell',
+    'tracebox',
+)
 
 # List of each arch, with a tuple of:
 # - perfetto-name (arg in perfetto build)
 # - android-tag (used in final output path, used for binary disambig at apk build time)
-# - associated ndk subdir for stripping (This includes a %s for host OS)
 ARCH_LIST = (
-    ('arm', 'arm', 'arm-%s-androideabi'),
-    ('arm64', 'aarch64', 'aarch64-%s-android'),
-    ('x64', 'x86_64', 'x86_64-%s-android'),
-    ('x86', 'x86', 'x86_64-%s-android'),
+    ('arm', 'arm'),
+    ('arm64', 'aarch64'),
+    ('x64', 'x86_64'),
+    ('x86', 'x86'),
+)
+
+# List of each proto to copy / check in. As imports in the top level
+# protos are changed, this list will need to be updated.
+PROTO_LIST = (
+    'protos/perfetto/trace_processor/trace_processor.proto',
+    'protos/perfetto/common/descriptor.proto',
+    'protos/perfetto/metrics/perfetto_merged_metrics.proto',
+    'protos/perfetto/trace_processor/metatrace_categories.proto',
 )
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -60,7 +76,24 @@ def main():
 
   gn = os.path.join(perfetto_dir, 'tools', 'gn')
 
-  for arch, arch_tag, ndk_dir_pattern in ARCH_LIST: #ARCH_TABLE.items():
+  ### Protos
+  print('\n\033[32mCopying Protos\033[0m')
+  # use root as proto dir, as all protos have 'protos' prefix, so will be in protos dir
+  out_proto_dir = ROOT_DIR
+  # cleanup old protos
+  subprocess.check_call(['rm', '-rf', 'protos'], cwd=ROOT_DIR)
+  for src_path in PROTO_LIST:
+    print(src_path)
+    split_path_in_repo = src_path.split('/')
+    src = os.path.join(perfetto_dir, *split_path_in_repo)
+    dst = os.path.join(out_proto_dir, *split_path_in_repo)
+
+    # Preserve tree when copying to support import paths
+    os.makedirs(os.path.dirname(dst), exist_ok=True)
+    copyfile(src, dst)
+
+  ### Binaries
+  for arch, arch_tag in ARCH_LIST:
     config_name ='android_%s' % (arch)
     gn_args = ANDROID_ARGS + ('target_cpu="%s"' % arch,)
 
@@ -100,9 +133,8 @@ def main():
           "llvm",
           "prebuilt",
           platform_folder,
-          ndk_dir_pattern % ("linux"), # TODO: support macos
           "bin",
-          "strip")
+          "llvm-strip")
       subprocess.check_call((strip_path, out_file))
 
 if __name__ == '__main__':
