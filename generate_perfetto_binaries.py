@@ -59,6 +59,7 @@ PROTO_LIST = (
     'protos/perfetto/common/descriptor.proto',
     'protos/perfetto/metrics/perfetto_merged_metrics.proto',
     'protos/perfetto/trace_processor/metatrace_categories.proto',
+    'protos/perfetto/perfetto_sql/structured_query.proto',
 )
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
