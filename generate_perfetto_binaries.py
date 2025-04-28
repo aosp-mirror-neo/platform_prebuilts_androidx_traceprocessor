@@ -26,13 +26,21 @@ import sys
 from shlex import quote
 from shutil import copyfile
 
-# NOTE - this script is adapted from perfetto_repo/tools/build_all_configs.py
-# If this stops working, try perfetto_repo/tools/install-build-deps, and check
-# the original build script (e.g. for arg renames)
+# NOTE - this script is adapted from (now deleted)
+# perfetto_repo/tools/build_all_configs.py If this stops working, try
+# perfetto_repo/tools/install-build-deps, and check build instructions
+# at See build docs at
+# https://perfetto.dev/docs/contributing/build-instructions
+ANDROID_ARGS = (
+    'target_os="android"',
+    'monolithic_binaries=true',
+    'is_debug=false'
+)
 
-ANDROID_ARGS = ('target_os="android"', 'monolithic_binaries=true', 'is_debug=false')
-
-ANDROID_BUILD_TARGETS = ('trace_processor_shell', 'tracebox')
+ANDROID_BUILD_TARGETS = (
+    'trace_processor_shell',
+    'tracebox',
+)
 
 # List of each arch, with a tuple of:
 # - perfetto-name (arg in perfetto build)
@@ -41,7 +49,7 @@ ARCH_LIST = (
     ('arm', 'arm'),
     ('arm64', 'aarch64'),
     ('x64', 'x86_64'),
-    ('x86', 'x86'), # Broken, see b/328101283
+    ('x86', 'x86'),
 )
 
 # List of each proto to copy / check in. As imports in the top level
@@ -51,6 +59,7 @@ PROTO_LIST = (
     'protos/perfetto/common/descriptor.proto',
     'protos/perfetto/metrics/perfetto_merged_metrics.proto',
     'protos/perfetto/trace_processor/metatrace_categories.proto',
+    'protos/perfetto/perfetto_sql/structured_query.proto',
 )
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
