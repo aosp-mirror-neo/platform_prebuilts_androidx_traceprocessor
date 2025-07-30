@@ -55,10 +55,13 @@ ARCH_LIST = (
 # List of each proto to copy / check in. As imports in the top level
 # protos are changed, this list will need to be updated.
 PROTO_LIST = (
-    'protos/perfetto/trace_processor/trace_processor.proto',
     'protos/perfetto/common/descriptor.proto',
     'protos/perfetto/metrics/perfetto_merged_metrics.proto',
+    'protos/perfetto/perfetto_sql/structured_query.proto',
     'protos/perfetto/trace_processor/metatrace_categories.proto',
+    'protos/perfetto/trace_processor/trace_processor.proto',
+    'protos/perfetto/trace_summary/file.proto',
+    'protos/perfetto/trace_summary/v2_metric.proto',
 )
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
