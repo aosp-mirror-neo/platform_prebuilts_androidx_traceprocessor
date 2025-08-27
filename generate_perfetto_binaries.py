@@ -26,13 +26,22 @@ import sys
 from shlex import quote
 from shutil import copyfile
 
-# NOTE - this script is adapted from perfetto_repo/tools/build_all_configs.py
-# If this stops working, try perfetto_repo/tools/install-build-deps, and check
-# the original build script (e.g. for arg renames)
+# NOTE - this script is adapted from (now deleted)
+# perfetto_repo/tools/build_all_configs.py If this stops working, try
+# perfetto_repo/tools/install-build-deps, and check build instructions
+# at See build docs at
+# https://perfetto.dev/docs/contributing/build-instructions
+ANDROID_ARGS = (
+    'target_os="android"',
+    'monolithic_binaries=true',
+    'is_debug=false',
+    'extra_target_ldflags="-Wl,-z,max-page-size=16384"',
+)
 
-ANDROID_ARGS = ('target_os="android"', 'monolithic_binaries=true', 'is_debug=false')
-
-ANDROID_BUILD_TARGETS = ('trace_processor_shell', 'tracebox')
+ANDROID_BUILD_TARGETS = (
+    'trace_processor_shell',
+    'tracebox',
+)
 
 # List of each arch, with a tuple of:
 # - perfetto-name (arg in perfetto build)
@@ -41,16 +50,19 @@ ARCH_LIST = (
     ('arm', 'arm'),
     ('arm64', 'aarch64'),
     ('x64', 'x86_64'),
-    ('x86', 'x86'), # Broken, see b/328101283
+    ('x86', 'x86'),
 )
 
 # List of each proto to copy / check in. As imports in the top level
 # protos are changed, this list will need to be updated.
 PROTO_LIST = (
-    'protos/perfetto/trace_processor/trace_processor.proto',
     'protos/perfetto/common/descriptor.proto',
     'protos/perfetto/metrics/perfetto_merged_metrics.proto',
+    'protos/perfetto/perfetto_sql/structured_query.proto',
     'protos/perfetto/trace_processor/metatrace_categories.proto',
+    'protos/perfetto/trace_processor/trace_processor.proto',
+    'protos/perfetto/trace_summary/file.proto',
+    'protos/perfetto/trace_summary/v2_metric.proto',
 )
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -87,7 +99,7 @@ def main():
   ### Binaries
   for arch, arch_tag in ARCH_LIST:
     config_name ='android_%s' % (arch)
-    gn_args = ANDROID_ARGS + ('target_cpu="%s"' % arch,)
+    gn_args = ANDROID_ARGS + (f'target_cpu="{arch}"',)
 
     print('\n\033[32mConfiguring %-20s[%s]\033[0m' % (config_name, ','.join(gn_args)))
     out_dir = os.path.join(perfetto_dir, 'out', config_name)
