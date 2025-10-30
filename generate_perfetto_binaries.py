@@ -34,7 +34,8 @@ from shutil import copyfile
 ANDROID_ARGS = (
     'target_os="android"',
     'monolithic_binaries=true',
-    'is_debug=false'
+    'is_debug=false',
+    'extra_target_ldflags="-Wl,-z,max-page-size=16384"',
 )
 
 ANDROID_BUILD_TARGETS = (
@@ -55,11 +56,13 @@ ARCH_LIST = (
 # List of each proto to copy / check in. As imports in the top level
 # protos are changed, this list will need to be updated.
 PROTO_LIST = (
-    'protos/perfetto/trace_processor/trace_processor.proto',
     'protos/perfetto/common/descriptor.proto',
     'protos/perfetto/metrics/perfetto_merged_metrics.proto',
-    'protos/perfetto/trace_processor/metatrace_categories.proto',
     'protos/perfetto/perfetto_sql/structured_query.proto',
+    'protos/perfetto/trace_processor/metatrace_categories.proto',
+    'protos/perfetto/trace_processor/trace_processor.proto',
+    'protos/perfetto/trace_summary/file.proto',
+    'protos/perfetto/trace_summary/v2_metric.proto',
 )
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -96,7 +99,7 @@ def main():
   ### Binaries
   for arch, arch_tag in ARCH_LIST:
     config_name ='android_%s' % (arch)
-    gn_args = ANDROID_ARGS + ('target_cpu="%s"' % arch,)
+    gn_args = ANDROID_ARGS + (f'target_cpu="{arch}"',)
 
     print('\n\033[32mConfiguring %-20s[%s]\033[0m' % (config_name, ','.join(gn_args)))
     out_dir = os.path.join(perfetto_dir, 'out', config_name)
