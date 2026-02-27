@@ -34,7 +34,8 @@ from shutil import copyfile
 ANDROID_ARGS = (
     'target_os="android"',
     'monolithic_binaries=true',
-    'is_debug=false'
+    'is_debug=false',
+    'extra_target_ldflags="-Wl,-z,max-page-size=16384"',
 )
 
 ANDROID_BUILD_TARGETS = (
@@ -98,7 +99,7 @@ def main():
   ### Binaries
   for arch, arch_tag in ARCH_LIST:
     config_name ='android_%s' % (arch)
-    gn_args = ANDROID_ARGS + ('target_cpu="%s"' % arch,)
+    gn_args = ANDROID_ARGS + (f'target_cpu="{arch}"',)
 
     print('\n\033[32mConfiguring %-20s[%s]\033[0m' % (config_name, ','.join(gn_args)))
     out_dir = os.path.join(perfetto_dir, 'out', config_name)
